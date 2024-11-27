@@ -1,0 +1,33 @@
+.modalBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .title {
+        color: var(--dark);
+        margin-bottom: 24px;
+    }
+
+    .input {
+        margin-bottom: 40px;
+    }
+
+    .keyboard {
+        margin-bottom: 40px;
+    }
+
+    .subtitle {
+        color: var(--background);
+        margin-bottom: 24px;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 24px;
+        width: 739px;
+
+        button {
+            flex: 1;
+        }
+    }
+}

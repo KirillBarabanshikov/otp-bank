@@ -1,0 +1,30 @@
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    border-radius: 24px;
+    padding: 24px;
+    width: 840px;
+    height: 264px;
+    background: #d1d1d1;
+
+    .row {
+        display: flex;
+        gap: 8px;
+
+        .key {
+            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            background: var(--white);
+
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 100%;
+            text-align: center;
+            color: #303030;
+        }
+    }
+}

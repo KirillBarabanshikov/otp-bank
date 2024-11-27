@@ -14,6 +14,7 @@ export const InactivityHandler: FC<IInactivityHandlerProps> = ({ timeout }) => {
             clearTimeout(timerRef.current);
         }
         timerRef.current = setTimeout(() => {
+            console.log('navigate');
             navigate('/');
         }, timeout);
     };

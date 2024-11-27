@@ -5,12 +5,12 @@ import { InactivityHandler } from '@/shared/handlers';
 
 export const router = createBrowserRouter([
     {
-        element: <InactivityHandler timeout={10000} />,
+        path: '/',
+        element: <Home />,
+    },
+    {
+        element: <InactivityHandler timeout={300000} />,
         children: [
-            {
-                path: '/',
-                element: <Home />,
-            },
             {
                 path: '/create-photo',
                 element: <CreatePhoto />,
