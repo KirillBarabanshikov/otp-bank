@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import { Home, ReadyPhoto, CreatePhoto } from '@/pages';
+import { CreatePhoto,Home, ReadyPhoto } from '@/pages';
 
 export const router = createBrowserRouter([
     {

@@ -1,0 +1,32 @@
+.createPhoto {
+    padding: 51px 60px;
+
+    .logo {
+        margin-bottom: 235px;
+    }
+
+    .title {
+        margin-bottom: 24px;
+    }
+
+    .text {
+        margin-bottom: 60px;
+        max-width: 609px;
+    }
+
+    .button {
+        width: 426px;
+    }
+
+    .timer {
+        position: absolute;
+        top: 373px;
+        left: 365px;
+    }
+
+    .camera {
+        position: absolute;
+        top: 0;
+        right: 224px;
+    }
+}

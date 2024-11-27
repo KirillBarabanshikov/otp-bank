@@ -1,7 +1,9 @@
-import styles from './Home.module.scss';
-import { Button } from '@/shared/ui';
-import homeImg from '@/shared/assets/images/home.png';
 import { useNavigate } from 'react-router-dom';
+
+import homeImg from '@/shared/assets/images/home.png';
+import { Button } from '@/shared/ui';
+
+import styles from './Home.module.scss';
 
 export const Home = () => {
     const navigate = useNavigate();
