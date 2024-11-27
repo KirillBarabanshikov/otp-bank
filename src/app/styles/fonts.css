@@ -1,0 +1,34 @@
+:root {
+    --font-family: 'Montserrat', sans-serif;
+    --second-family: 'Inter', sans-serif;
+    --third-family: 'Cera Pro', sans-serif;
+    --fourth-family: 'RussianRail G Pro', sans-serif;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('./fonts/MontserratMedium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('./fonts/InterBold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cera Pro';
+    src: url('./fonts/CeraProRegular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RussianRail G Pro';
+    src: url('./fonts/RussianRailGProRegular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}

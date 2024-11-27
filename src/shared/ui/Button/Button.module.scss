@@ -1,0 +1,28 @@
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 98px;
+    padding: 0 77px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 28px;
+    transition:
+        background-color 300ms,
+        color 300ms;
+
+    &.solid {
+        &.accent {
+            background-color: var(--accent);
+
+            &:active {
+                background-color: #8fbd00;
+            }
+        }
+    }
+
+    &:disabled {
+        pointer-events: none;
+    }
+}
