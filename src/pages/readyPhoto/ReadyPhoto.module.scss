@@ -1,0 +1,48 @@
+.readyPhoto {
+    padding: 51px 60px;
+
+    .logo {
+        margin-bottom: 94px;
+    }
+
+    .wrap {
+        max-width: 736px;
+
+        .title {
+            margin-bottom: 24px;
+        }
+
+        .text {
+            margin-bottom: 60px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 60px;
+
+            button {
+                flex: 1;
+            }
+        }
+
+        .buttons {
+            display: flex;
+            gap: 16px;
+
+            button {
+                flex: 1;
+            }
+        }
+    }
+
+    .photo {
+        position: absolute;
+        top: 0;
+        right: 224px;
+        width: 720px;
+        height: 1080px;
+        object-fit: contain;
+    }
+}

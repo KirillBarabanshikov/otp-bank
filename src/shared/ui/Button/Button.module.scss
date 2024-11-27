@@ -22,6 +22,30 @@
         }
     }
 
+    &.outline {
+        &.light {
+            color: var(--white);
+            background-color: transparent;
+            outline: 1px solid var(--white);
+            outline-offset: -1px;
+
+            &:active {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        &.dark {
+            color: var(--background);
+            background-color: transparent;
+            outline: 1px solid var(--background);
+            outline-offset: -1px;
+
+            &:active {
+                background-color: rgba(52, 45, 57, 0.1);
+            }
+        }
+    }
+
     &:disabled {
         pointer-events: none;
     }
