@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Logo from '@/shared/assets/logo.svg?react';
 import { Button, Photo } from '@/shared/ui';
+import { Loader } from '@/shared/ui/Loader';
 
 import { EmailModal } from './components';
 import styles from './ReadyPhoto.module.scss';
@@ -51,7 +52,12 @@ export const ReadyPhoto = () => {
                 </div>
                 <Photo src={'/test.png'} className={styles.photo} isLoading={isLoading} />
             </div>
-            <EmailModal isOpen={modalState === 'email'} />
+            <EmailModal isOpen={modalState === 'email'} onClose={() => setModalState('none')} />
+            <Loader
+                isLoading={true}
+                title={'Идет печать'}
+                subtitle={'Пожалуйста, подождите, пока мы напечатаем ваш снимок'}
+            />
         </>
     );
 };

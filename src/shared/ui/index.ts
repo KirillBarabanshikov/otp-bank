@@ -1,3 +1,4 @@
+export { AlertModal } from './AlertModal';
 export { Button } from './Button';
 export { CameraFeed } from './CameraFreed';
 export { Input } from './Input';

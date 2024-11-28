@@ -42,7 +42,7 @@ export const Photo: FC<IPhotoProps> = ({ src, isLoading, className }) => {
                                     duration: 1.5,
                                 }}
                             >
-                                <LoaderIcon />
+                                <LoaderIcon className={styles.loader} />
                             </motion.div>
                             <p className={'text'}>Пожалуйста,подождите...</p>
                         </motion.div>
