@@ -17,7 +17,9 @@ export const ReadyPhoto = () => {
         setIsLoading(true);
     };
 
-    const handleAI = () => {};
+    const handleAI = () => {
+        setIsLoading(true);
+    };
 
     const handlePrint = () => {};
 

@@ -11,7 +11,8 @@ interface IKeyboardProps {
 }
 
 export const Keyboard: FC<IKeyboardProps> = ({ inputRef, onEnter, className }) => {
-    const [currentLayout, setCurrentLayout] = useState<'rus' | 'en' | 'num'>('rus');
+    const [isCaps, setIsCaps] = useState(false);
+    const [currentLayout, setCurrentLayout] = useState<'rus' | 'en' | 'num'>('en');
 
     function onChange(e: React.MouseEvent<HTMLDivElement>) {
         const target = e.target as HTMLElement;
@@ -22,8 +23,6 @@ export const Keyboard: FC<IKeyboardProps> = ({ inputRef, onEnter, className }) =
 
         const start = input.selectionStart ?? 0;
         const end = input.selectionEnd ?? 0;
-
-        console.log(start, end);
 
         switch (code) {
             case 'Backspace':
@@ -44,6 +43,10 @@ export const Keyboard: FC<IKeyboardProps> = ({ inputRef, onEnter, className }) =
 
             case 'KeyNum':
                 return setCurrentLayout('num');
+
+            case 'CapsLock':
+                setIsCaps((prev) => !prev);
+                break;
 
             default:
                 if (start != end) {
@@ -69,8 +72,8 @@ export const Keyboard: FC<IKeyboardProps> = ({ inputRef, onEnter, className }) =
                             <button
                                 key={code}
                                 data-code={code}
-                                data-key={key}
-                                className={clsx(styles[code], styles.key)}
+                                data-key={isCaps ? key.toUpperCase() : key}
+                                className={clsx(styles.key, isCaps && styles.isCaps, styles[code])}
                             >
                                 {key}
                             </button>
