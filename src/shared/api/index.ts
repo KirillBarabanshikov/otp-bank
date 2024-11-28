@@ -1,1 +1,1 @@
-export { sendEmail } from './queries';
+export { generationDecorate,sendEmail } from './queries';

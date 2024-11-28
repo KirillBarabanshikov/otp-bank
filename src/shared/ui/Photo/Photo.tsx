@@ -18,7 +18,7 @@ export const Photo: FC<IPhotoProps> = ({ src, isLoading, className }) => {
             <div className={clsx(styles.photoWrap, isLoading && styles.isLoading)}>
                 <motion.img
                     key={src}
-                    src={src}
+                    src={`${src}?${Date.now()}`}
                     alt={'photo'}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

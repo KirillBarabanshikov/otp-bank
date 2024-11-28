@@ -11,14 +11,21 @@ import styles from './EmailModal.module.scss';
 interface IEmailModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onPrint: () => void;
+    origin: boolean;
+    decorative: boolean;
 }
 
-export const EmailModal: FC<IEmailModalProps> = ({ isOpen, onClose }) => {
+export const EmailModal: FC<IEmailModalProps> = ({ isOpen, onClose, origin, decorative, onPrint }) => {
     const [showAlert, setShowAlert] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
 
-    const { mutateAsync: send, isError } = useMutation({
+    const {
+        mutateAsync: send,
+        isError,
+        isPending,
+    } = useMutation({
         mutationFn: sendEmail,
     });
 
@@ -29,7 +36,7 @@ export const EmailModal: FC<IEmailModalProps> = ({ isOpen, onClose }) => {
         if (!email) return;
 
         try {
-            await send({ hash: '', address: email, origin: false, decorative: false });
+            await send({ address: email, origin, decorative });
         } catch (error) {
             console.error(error);
         } finally {
@@ -38,6 +45,8 @@ export const EmailModal: FC<IEmailModalProps> = ({ isOpen, onClose }) => {
     };
 
     const handleClose = () => {
+        if (isPending) return;
+
         onClose();
         setShowAlert(false);
     };
@@ -53,10 +62,12 @@ export const EmailModal: FC<IEmailModalProps> = ({ isOpen, onClose }) => {
                         Нажимая продолжить вы даете Согласие на обработку персональных данных
                     </p>
                     <div className={styles.buttons}>
-                        <Button variant={'outline'} theme={'dark'} onClick={onClose}>
+                        <Button variant={'outline'} theme={'dark'} onClick={handleClose}>
                             назад
                         </Button>
-                        <Button onClick={handleSubmit}>отправить</Button>
+                        <Button onClick={handleSubmit} disabled={isPending}>
+                            отправить
+                        </Button>
                     </div>
                 </div>
             </Modal>
@@ -77,7 +88,14 @@ export const EmailModal: FC<IEmailModalProps> = ({ isOpen, onClose }) => {
                             <Button variant={'outline'} theme={'dark'} onClick={() => navigate('/')}>
                                 на главную
                             </Button>
-                            <Button>напечатать фото</Button>
+                            <Button
+                                onClick={() => {
+                                    onPrint();
+                                    handleClose();
+                                }}
+                            >
+                                напечатать фото
+                            </Button>
                         </>
                     )
                 }
