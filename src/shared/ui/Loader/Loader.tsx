@@ -29,9 +29,7 @@ export const Loader: FC<ILoaderProps> = ({ isLoading, title, subtitle }) => {
                     <LoaderIcon className={styles.loader} />
                 </motion.div>
                 {title && <h3 className={styles.title}>{title}</h3>}
-                {subtitle && (
-                    <p className={clsx(styles.text, 'text')}>Пожалуйста, подождите, пока мы напечатаем ваш снимок</p>
-                )}
+                {subtitle && <div className={clsx(styles.text, 'text')}>{subtitle}</div>}
             </div>
         </Modal>
     );

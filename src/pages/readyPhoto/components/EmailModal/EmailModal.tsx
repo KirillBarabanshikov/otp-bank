@@ -62,7 +62,7 @@ export const EmailModal: FC<IEmailModalProps> = ({ isOpen, onClose, origin, deco
                         Нажимая продолжить вы даете Согласие на обработку персональных данных
                     </p>
                     <div className={styles.buttons}>
-                        <Button variant={'outline'} theme={'dark'} onClick={handleClose}>
+                        <Button variant={'outline'} theme={'dark'} onClick={handleClose} disabled={isPending}>
                             назад
                         </Button>
                         <Button onClick={handleSubmit} disabled={isPending}>

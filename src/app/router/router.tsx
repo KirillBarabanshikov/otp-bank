@@ -9,7 +9,7 @@ export const router = createBrowserRouter([
         element: <Home />,
     },
     {
-        element: <InactivityHandler timeout={300000} />,
+        element: <InactivityHandler timeout={5 * 60 * 1000} />, // 5 минут
         children: [
             {
                 path: '/create-photo',

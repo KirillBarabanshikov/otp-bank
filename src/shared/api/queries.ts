@@ -1,52 +1,68 @@
-import axios from 'axios';
+// import axios from 'axios';
 
-import { API_URL } from '../consts';
+import { instance } from './instance';
 
-export async function sendEmail(body: { address: string; origin: boolean; decorative: boolean }) {
+export async function createPhotoHandler() {
     try {
-        await axios.post(API_URL + '/api/email/send', body);
+        // const response = await axios.post<{ photoName: string }>('');
+        // return response.data;
+        return new Promise<{ photoName: string }>((resolve) => {
+            setTimeout(() => {
+                resolve({ photoName: 'test.png' });
+            }, 2000);
+        });
     } catch (error) {
-        throw new Error(`send email error ${error}`);
+        throw new Error(`Failed to create photo: ${error}`);
     }
 }
 
-export async function fetchHash() {
+export async function printPhotoHandler(photoPath: string) {
     try {
-        const response = await axios.get<string>(API_URL + '/api/generation/hash');
-        return response.data;
+        // await axios.post('', { photoPath });
+        return new Promise<{ photoName: string }>((_, reject) => {
+            setTimeout(() => {
+                reject({ photoName: photoPath });
+            }, 2000);
+        });
     } catch (error) {
-        throw new Error(`fetch hash error ${error}`);
+        throw new Error(`Failed to print photo: ${error}`);
     }
 }
 
-export async function fetchGenerationFile() {
+export async function fetchPhoto(photoName: string) {
     try {
-        const response = await axios.get<{ generated_image: string; status: 'generate' | 'ready' | 'error' }>(
-            API_URL + `/api/generation/file`,
+        const response = await instance.post<{ original_image: string }>(
+            '/generation/photo',
+            { name: photoName },
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            },
         );
-        return response.data;
+        return { originalImage: response.data.original_image };
     } catch (error) {
-        throw new Error(`fetch generation file error ${error}`);
+        throw new Error(`Failed to fetch photo: ${error}`);
     }
 }
 
-export async function generationDecorate(body: { origin: boolean }) {
+export async function generateFrame(body: { origin: boolean }) {
     try {
-        const response = await axios.post<{ generated_image: string }>(API_URL + '/api/generation/decorate', body, {
+        const response = await instance.post<{ generated_image: string }>('/generation/decorate', body, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
         });
-        return response.data;
+        return { generatedImage: response.data.generated_image };
     } catch (error) {
-        throw new Error(`generation decorate error ${error}`);
+        throw new Error(`Failed to generate frame: ${error}`);
     }
 }
 
-export async function generationFile() {
+export async function generatePhoto() {
     try {
-        await axios.post(
-            API_URL + '/api/generation/file',
+        await instance.post(
+            '/generation/file',
             {},
             {
                 headers: {
@@ -54,7 +70,37 @@ export async function generationFile() {
                 },
             },
         );
+
+        return new Promise<{ generatedImage: string }>((resolve, reject) => {
+            const interval = setInterval(async () => {
+                try {
+                    const response = await instance.get<{
+                        generated_image: string;
+                        status: 'generate' | 'ready' | 'error';
+                    }>('/generation/file');
+
+                    if (response.data.status === 'ready') {
+                        clearInterval(interval);
+                        resolve({ generatedImage: response.data.generated_image });
+                    } else if (response.data.status === 'error') {
+                        clearInterval(interval);
+                        reject(new Error('Image generation failed'));
+                    }
+                } catch (error) {
+                    clearInterval(interval);
+                    reject(new Error(`Failed to poll status: ${error}`));
+                }
+            }, 1000);
+        });
     } catch (error) {
-        throw new Error(`generation file error ${error}`);
+        throw new Error(`Failed to generate photo: ${error}`);
+    }
+}
+
+export async function sendEmail(body: { address: string; origin: boolean; decorative: boolean }) {
+    try {
+        await instance.post('/email/send', body);
+    } catch (error) {
+        throw new Error(`Failed to send email: ${error}`);
     }
 }

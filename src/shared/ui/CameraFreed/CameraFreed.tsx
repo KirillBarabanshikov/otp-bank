@@ -1,12 +1,11 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, MutableRefObject, useEffect } from 'react';
 
 interface ICameraFreedProps {
+    videoRef: MutableRefObject<HTMLVideoElement | null>;
     className?: string;
 }
 
-export const CameraFeed: FC<ICameraFreedProps> = ({ className }) => {
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-
+export const CameraFeed: FC<ICameraFreedProps> = ({ videoRef, className }) => {
     useEffect(() => {
         const startCamera = async () => {
             try {
@@ -37,7 +36,7 @@ export const CameraFeed: FC<ICameraFreedProps> = ({ className }) => {
 
     return (
         <div className={className}>
-            <video ref={videoRef} autoPlay playsInline muted />
+            <video ref={videoRef} autoPlay playsInline muted style={{ transform: 'scaleX(-1)' }} />
         </div>
     );
 };

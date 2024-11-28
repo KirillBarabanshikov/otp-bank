@@ -1,103 +1,101 @@
 import clsx from 'clsx';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { generationDecorate } from '@/shared/api';
-import { fetchGenerationFile, generationFile } from '@/shared/api/queries.ts';
+import { EmailModal } from '@/pages/readyPhoto/components';
+import { generateFrame, generatePhoto, printPhotoHandler } from '@/shared/api';
 import Logo from '@/shared/assets/logo.svg?react';
 import { API_URL } from '@/shared/consts';
-import { AlertModal, Button, Photo } from '@/shared/ui';
-import { Loader } from '@/shared/ui/Loader';
+import { AlertModal, Button, Loader, Photo } from '@/shared/ui';
 
-import { EmailModal } from './components';
 import styles from './ReadyPhoto.module.scss';
 
 export const ReadyPhoto = () => {
-    const [modalState, setModalState] = useState<'none' | 'email'>('none');
-    const [isLoading, setIsLoading] = useState(false);
+    const [modalState, setModalState] = useState<'none' | 'email' | 'generate-error' | 'print-error' | 'print-success'>(
+        'none',
+    );
+    const [loadingState, setLoadingState] = useState<'none' | 'generate' | 'print'>('none');
     const navigate = useNavigate();
     const location = useLocation();
-    const state = location.state as { hash: string; original_image: string };
-    const [currentImage, setCurrentImage] = useState<{ image: string; origin: boolean; decorative: boolean }>({
-        image: state.original_image,
+    const originalImage = (location.state as string) || '';
+
+    const [photo, setPhoto] = useState<{
+        currentImage: string;
+        prevImage?: string;
+        origin: boolean;
+        decorative: boolean;
+    }>({
+        currentImage: originalImage,
+        prevImage: undefined,
         origin: true,
         decorative: false,
     });
-    const intervalRef = useRef<any>(null);
-    const [isGenerateError, setIsGenerateError] = useState(false);
-    const [showLoaderPrint, setShowLoaderPrint] = useState(false);
-    const [prevImage, setPrevImage] = useState<string | undefined>(undefined);
-    const [printState, setPrintState] = useState<'none' | 'success' | 'error'>('none');
 
-    const handleAddFrame = async () => {
-        if (currentImage.decorative) {
-            return setCurrentImage({
-                image: prevImage ?? '',
-                origin: currentImage.origin,
-                decorative: false,
+    const handleToggleFrame = async () => {
+        const currentPhoto = photo;
+
+        if (currentPhoto.decorative && currentPhoto.prevImage) {
+            return setPhoto({
+                currentImage: currentPhoto.prevImage,
+                prevImage: currentPhoto.currentImage,
+                origin: currentPhoto.origin,
+                decorative: !currentPhoto.decorative,
             });
         }
 
         try {
-            setIsLoading(true);
-            const { generated_image } = await generationDecorate({ origin: currentImage.origin });
-            setPrevImage(currentImage.image);
-            setCurrentImage({
-                image: generated_image,
-                origin: currentImage.origin,
+            setLoadingState('generate');
+            const { generatedImage } = await generateFrame({ origin: currentPhoto.origin });
+            setPhoto({
+                currentImage: generatedImage,
+                prevImage: currentPhoto.currentImage,
+                origin: currentPhoto.origin,
                 decorative: true,
             });
         } catch (error) {
             console.error(error);
+            setModalState('generate-error');
         } finally {
-            setIsLoading(false);
+            setLoadingState('none');
         }
     };
 
-    const fetchFile = () => {
-        fetchGenerationFile().then((data) => {
-            if (data.status === 'ready') {
-                setCurrentImage({
-                    image: data.generated_image,
-                    origin: false,
-                    decorative: false,
-                });
-                setIsLoading(false);
-                if (intervalRef.current) clearInterval(intervalRef.current);
-            }
-            if (data.status === 'error') {
-                setIsGenerateError(true);
-                setIsLoading(false);
-            }
-        });
-    };
-
-    const handleAI = async () => {
+    const handleGeneratePhoto = async () => {
         try {
-            setIsLoading(true);
-            await generationFile();
-            intervalRef.current = setInterval(fetchFile, 1000);
+            setLoadingState('generate');
+            const { generatedImage } = await generatePhoto();
+            setPhoto({
+                currentImage: generatedImage,
+                prevImage: undefined,
+                origin: false,
+                decorative: false,
+            });
         } catch (error) {
             console.error(error);
-            setIsGenerateError(true);
-            setIsLoading(false);
+            setModalState('generate-error');
+        } finally {
+            setLoadingState('none');
         }
     };
 
     const handlePrint = async () => {
         try {
-            setShowLoaderPrint(true);
+            setLoadingState('print');
+            await printPhotoHandler(`${API_URL}/${photo.currentImage}`);
+            setModalState('print-success');
         } catch (error) {
             console.error(error);
-            setPrintState('error');
+            setModalState('print-error');
         } finally {
-            // setShowLoaderPrint(false);
+            setLoadingState('none');
         }
     };
 
     const handleEmail = () => {
         setModalState('email');
     };
+
+    const closeModal = () => setModalState('none');
 
     return (
         <>
@@ -106,11 +104,14 @@ export const ReadyPhoto = () => {
                 <div className={styles.wrap}>
                     <h2 className={styles.title}>Ваша фотография</h2>
                     <p className={clsx(styles.text, 'text')}>Выберите, что хотите сделать с готовым снимком</p>
-                    <div className={styles.actions} style={{ pointerEvents: isLoading ? 'none' : 'initial' }}>
-                        <Button onClick={handleAddFrame}>
-                            {currentImage.decorative ? 'Убрать рамку' : 'Добавить рамку'}
+                    <div
+                        className={styles.actions}
+                        style={{ pointerEvents: loadingState === 'generate' ? 'none' : 'initial' }}
+                    >
+                        <Button onClick={handleToggleFrame}>
+                            {photo.decorative ? 'Убрать рамку' : 'Добавить рамку'}
                         </Button>
-                        <Button onClick={handleAI}>Обработать с помощью ии</Button>
+                        <Button onClick={handleGeneratePhoto}>Обработать с помощью ии</Button>
                         <Button onClick={handlePrint}>Напечатать фото</Button>
                         <Button onClick={handleEmail}>Отправить на почту</Button>
                     </div>
@@ -124,73 +125,63 @@ export const ReadyPhoto = () => {
                     </div>
                 </div>
                 <Photo
-                    key={`${API_URL}/${currentImage.image}`}
-                    src={`${API_URL}/${currentImage.image}`}
+                    src={`${API_URL}/${photo.currentImage}`}
                     className={styles.photo}
-                    isLoading={isLoading}
+                    isLoading={loadingState === 'generate'}
                 />
             </div>
-            <EmailModal
-                isOpen={modalState === 'email'}
-                onClose={() => setModalState('none')}
-                onPrint={handlePrint}
-                origin={currentImage.origin}
-                decorative={currentImage.decorative}
-            />
-            <Loader
-                isLoading={showLoaderPrint}
-                title={'Идет печать'}
-                subtitle={'Пожалуйста, подождите, пока мы напечатаем ваш снимок'}
-            />
             <AlertModal
-                isOpen={isGenerateError}
+                isOpen={modalState === 'generate-error'}
+                onClose={closeModal}
                 title={'Произошла ошибка'}
                 subtitle={
                     'К сожалению, сейчас программа не может обработать ваш снимок, вернитесь назад и попробуйте другую опцию'
                 }
+                actions={<Button onClick={closeModal}>назад</Button>}
                 isError
-                actions={<Button onClick={() => setIsGenerateError(false)}>назад</Button>}
+            />
+            <Loader
+                isLoading={loadingState === 'print'}
+                title={'Идет печать'}
+                subtitle={'Пожалуйста, подождите, пока мы\nнапечатаем ваш снимок'}
             />
             <AlertModal
-                isOpen={printState !== 'none'}
-                title={printState === 'error' ? 'не удалось напечатать фото' : 'Заберите ваш снимок'}
+                isOpen={modalState === 'print-error' || modalState === 'print-success'}
+                onClose={closeModal}
+                title={modalState === 'print-error' ? 'не удалось\nнапечатать фото' : 'Заберите ваш снимок'}
                 subtitle={
-                    printState === 'error'
+                    modalState === 'print-error'
                         ? 'К сожалению на данный момент функция недоступна. Вы можете получить электронную версию фотографии'
                         : 'Спасибо, что воспользовались нашим терминалом. Вы также можете получить электронную версию фотографии'
                 }
-                isError={printState === 'error'}
                 actions={
-                    printState === 'error' ? (
+                    modalState === 'print-error' ? (
                         <>
-                            <Button variant={'outline'} theme={'dark'} onClick={() => setPrintState('none')}>
+                            <Button variant={'outline'} theme={'dark'} onClick={closeModal}>
                                 назад
                             </Button>
-                            <Button
-                                onClick={() => {
-                                    setPrintState('none');
-                                    setModalState('email');
-                                }}
-                            >
-                                отправить на почту
-                            </Button>
+                            <Button onClick={handleEmail}>отправить на почту</Button>
                         </>
                     ) : (
                         <>
                             <Button variant={'outline'} theme={'dark'} onClick={() => navigate('/')}>
                                 на главную
                             </Button>
-                            <Button
-                                onClick={() => {
-                                    setPrintState('none');
-                                    setModalState('email');
-                                }}
-                            >
-                                отправить на почту
-                            </Button>
+                            <Button onClick={handleEmail}>отправить на почту</Button>
                         </>
                     )
                 }
+                isError={modalState === 'print-error'}
+            />
+            <EmailModal
+                isOpen={modalState === 'email'}
+                onClose={closeModal}
+                onPrint={() => {
+                    setModalState('none');
+                    handlePrint();
+                }}
+                origin={photo.origin}
+                decorative={photo.decorative}
             />
         </>
     );

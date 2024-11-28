@@ -8,14 +8,16 @@
     }
 
     .title {
-        margin: 40px 0 24px 0;
+        margin-top: 40px;
         color: var(--dark);
         text-align: center;
         font-size: 48px;
     }
 
     .text {
+        margin-top: 24px;
         color: #373737;
         text-align: center;
+        white-space: break-spaces;
     }
 }
