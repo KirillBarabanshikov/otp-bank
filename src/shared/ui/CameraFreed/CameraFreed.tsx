@@ -1,4 +1,5 @@
 import { FC, MutableRefObject, useEffect } from 'react';
+import { DEVICE_ID } from '@/shared/consts';
 
 interface ICameraFreedProps {
     videoRef: MutableRefObject<HTMLVideoElement | null>;
@@ -9,11 +10,11 @@ export const CameraFeed: FC<ICameraFreedProps> = ({ videoRef, className }) => {
     useEffect(() => {
         const startCamera = async () => {
             try {
+                navigator.mediaDevices.enumerateDevices().then((devices) => console.log(devices));
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
-                        width: 720,
-                        height: 1080,
-                        facingMode: 'user',
+                        aspectRatio: 9 / 16,
+                        deviceId: DEVICE_ID,
                     },
                 });
                 if (videoRef.current) {
@@ -36,7 +37,7 @@ export const CameraFeed: FC<ICameraFreedProps> = ({ videoRef, className }) => {
 
     return (
         <div className={className}>
-            <video ref={videoRef} autoPlay playsInline muted style={{ transform: 'scaleX(-1)' }} />
+            <video ref={videoRef} autoPlay playsInline muted />
         </div>
     );
 };

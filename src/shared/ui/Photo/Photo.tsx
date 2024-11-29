@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 
 import LoaderIcon from '@/shared/assets/icons/loader.svg?react';
 
@@ -13,16 +13,11 @@ interface IPhotoProps {
 }
 
 export const Photo: FC<IPhotoProps> = ({ src, isLoading, className }) => {
-    const currentSrc = useMemo(() => {
-        return `${src}?${Date.now()}`;
-    }, [src]);
-
     return (
         <div className={className}>
             <div className={clsx(styles.photoWrap, isLoading && styles.isLoading)}>
                 <motion.img
-                    key={currentSrc}
-                    src={currentSrc}
+                    src={`${src}?${Date.now()}`}
                     alt={'photo'}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

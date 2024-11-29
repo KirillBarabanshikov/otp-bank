@@ -25,8 +25,18 @@
     }
 
     .camera {
+        overflow: hidden;
         position: absolute;
         top: 0;
-        right: 224px;
+        right: 180px;
+        width: 607px;
+        height: 1080px;
+
+        video {
+            //margin: 0 calc(50% - 50vw);
+            height: 1080px;
+            //top: -100px;
+            //position: absolute;
+        }
     }
 }

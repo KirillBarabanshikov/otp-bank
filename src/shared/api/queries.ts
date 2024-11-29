@@ -1,16 +1,12 @@
-// import axios from 'axios';
+import axios from 'axios';
 
 import { instance } from './instance';
+import { CREATE_PHOTO_HANDLER_URL, PRINT_PHOTO_HANDLER_URL } from '@/shared/consts';
 
 export async function createPhotoHandler() {
     try {
-        // const response = await axios.post<{ photoName: string }>('');
-        // return response.data;
-        return new Promise<{ photoName: string }>((resolve) => {
-            setTimeout(() => {
-                resolve({ photoName: 'test.png' });
-            }, 2000);
-        });
+        const response = await axios.get<string>(CREATE_PHOTO_HANDLER_URL);
+        return response.data.split(`\\`).at(-1);
     } catch (error) {
         throw new Error(`Failed to create photo: ${error}`);
     }
@@ -18,12 +14,7 @@ export async function createPhotoHandler() {
 
 export async function printPhotoHandler(photoPath: string) {
     try {
-        // await axios.post('', { photoPath });
-        return new Promise<{ photoName: string }>((_, reject) => {
-            setTimeout(() => {
-                reject({ photoName: photoPath });
-            }, 2000);
-        });
+        await axios.get(PRINT_PHOTO_HANDLER_URL, { params: { photoPath } });
     } catch (error) {
         throw new Error(`Failed to print photo: ${error}`);
     }

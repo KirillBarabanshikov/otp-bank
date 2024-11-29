@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import { CreatePhoto, Home, ReadyPhoto } from '@/pages';
 import { InactivityHandler } from '@/shared/handlers';
+import { INACTIVITY_TIMEOUT } from '@/shared/consts';
 
 export const router = createBrowserRouter([
     {
@@ -9,7 +10,7 @@ export const router = createBrowserRouter([
         element: <Home />,
     },
     {
-        element: <InactivityHandler timeout={5 * 60 * 1000} />, // 5 минут
+        element: <InactivityHandler timeout={INACTIVITY_TIMEOUT} />,
         children: [
             {
                 path: '/create-photo',

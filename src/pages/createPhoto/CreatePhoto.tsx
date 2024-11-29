@@ -19,8 +19,8 @@ export const CreatePhoto = () => {
         try {
             videoRef.current?.pause();
             setIsLoading(true);
-            const { photoName } = await createPhotoHandler();
-            const { originalImage } = await fetchPhoto(photoName);
+            const photoName = await createPhotoHandler();
+            const { originalImage } = await fetchPhoto(photoName || '');
             navigate('/ready-photo', { state: originalImage });
         } catch (error) {
             setShowTimer(false);

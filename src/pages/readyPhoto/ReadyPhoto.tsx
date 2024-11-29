@@ -41,6 +41,13 @@ export const ReadyPhoto = () => {
                 origin: currentPhoto.origin,
                 decorative: !currentPhoto.decorative,
             });
+        } else if (currentPhoto.prevImage) {
+            return setPhoto({
+                currentImage: currentPhoto.prevImage,
+                prevImage: currentPhoto.currentImage,
+                origin: currentPhoto.origin,
+                decorative: !currentPhoto.decorative,
+            });
         }
 
         try {
